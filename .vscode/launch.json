@@ -5,30 +5,10 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "todo_riverpod_sync",
-            "cwd": "todo_riverpod_sync",
-            "request": "launch",
+            "name": "Flutter",
             "type": "dart",
-            "env": {
-                "JAVA_HOME": "/usr/lib/jvm/temurin-11-jdk"
-            }
-        },
-        {
-            "name": "todo_riverpod_sync (profile mode)",
-            "cwd": "todo_riverpod_sync",
             "request": "launch",
-            "type": "dart",
-            "flutterMode": "profile",
-            "env": {
-                "JAVA_HOME": "/usr/lib/jvm/temurin-11-jdk"
-            }
-        },
-        {
-            "name": "todo_riverpod_sync (release mode)",
-            "cwd": "todo_riverpod_sync",
-            "request": "launch",
-            "type": "dart",
-            "flutterMode": "release",
+            "program": "todo_riverpod/lib/main.dart",
             "env": {
                 "JAVA_HOME": "/usr/lib/jvm/temurin-11-jdk"
             }
