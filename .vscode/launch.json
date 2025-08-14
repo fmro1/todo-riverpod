@@ -5,10 +5,19 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Flutter",
+            "name": "RivepodSync",
             "type": "dart",
             "request": "launch",
             "program": "todo_riverpod/lib/main.dart",
+            "env": {
+                "JAVA_HOME": "/usr/lib/jvm/temurin-11-jdk"
+            }
+        },
+        {
+            "name": "RivepodEnum",
+            "type": "dart",
+            "request": "launch",
+            "program": "todo_riverpod_enum/lib/main.dart",
             "env": {
                 "JAVA_HOME": "/usr/lib/jvm/temurin-11-jdk"
             }
