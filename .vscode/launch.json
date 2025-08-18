@@ -22,6 +22,15 @@
                 "JAVA_HOME": "/usr/lib/jvm/temurin-11-jdk"
             },
             "args": [ "--no-enable-impeller"]
+        },
+        {
+            "name": "RivepodSealed",
+            "type": "dart",
+            "request": "launch",
+            "program": "todo_riverpod_sealed/lib/main.dart",
+            "env": {
+                "JAVA_HOME": "/usr/lib/jvm/temurin-11-jdk"
+            }
         }
     ]
 }
