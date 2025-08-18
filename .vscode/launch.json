@@ -20,7 +20,8 @@
             "program": "todo_riverpod_enum/lib/main.dart",
             "env": {
                 "JAVA_HOME": "/usr/lib/jvm/temurin-11-jdk"
-            }
+            },
+            "args": [ "--no-enable-impeller"]
         }
     ]
 }
