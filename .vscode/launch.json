@@ -31,6 +31,15 @@
             "env": {
                 "JAVA_HOME": "/usr/lib/jvm/temurin-11-jdk"
             }
+        },
+        {
+            "name": "RivepodAsyncvalue",
+            "type": "dart",
+            "request": "launch",
+            "program": "todo_riverpod_asyncvalue/lib/main.dart",
+            "env": {
+                "JAVA_HOME": "/usr/lib/jvm/temurin-11-jdk"
+            }
         }
     ]
 }
