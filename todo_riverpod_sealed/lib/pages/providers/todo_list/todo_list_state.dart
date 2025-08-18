@@ -1,28 +1,38 @@
-import 'package:freezed_annotation/freezed_annotation.dart';
-
 import '../../../models/todo_model.dart';
 
-part 'todo_list_state.freezed.dart';
-
-enum TodoListStatus {
-  initial,
-  loading,
-  succes,
-  failure,
+sealed class TodoListState {
+  const TodoListState();
 }
 
-@freezed
-class TodoListState with _$TodoListState {
-  const factory TodoListState({
-    required TodoListStatus status,
-    required List<Todo> todos,
-    @Default("") String error,
-  }) = _TodoListState;
+final class TodoListStateInitial extends TodoListState {
+  const TodoListStateInitial();
 
-  factory TodoListState.initial() {
-    return const TodoListState(
-      status: TodoListStatus.initial,
-      todos: [],
-    );
+  @override
+  String toString() => "TodoListInitial()";
+}
+
+final class TodoListStateLoading extends TodoListState {
+  const TodoListStateLoading();
+  @override
+  String toString() => "TodoListStateLoading()";
+}
+
+final class TodoListStateSuccess extends TodoListState {
+  final List<Todo> todos;
+  const TodoListStateSuccess({required this.todos});
+
+  @override
+  String toString() {
+    return "TodoListStateSuccess(todos: $todos)";
+  }
+}
+
+final class TodoListStateFailure extends TodoListState {
+  final String error;
+  const TodoListStateFailure({required this.error});
+
+  @override
+  String toString() {
+    return "TodoListStateFailure(error: $error)";
   }
 }

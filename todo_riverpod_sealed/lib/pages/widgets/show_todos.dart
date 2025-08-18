@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../providers/filtered_todos/filtered_todos_provider.dart';
+import '../../models/todo_model.dart';
+import '../providers/todo_filter/todo_filter_provider.dart';
 import '../providers/todo_item/todo_item_provider.dart';
 import '../providers/todo_list/todo_list_provider.dart';
 import '../providers/todo_list/todo_list_state.dart';
+import '../providers/todo_search/todo_search_provider.dart';
 import 'todo_item.dart';
 
 class ShowTodos extends ConsumerStatefulWidget {
@@ -25,30 +27,54 @@ class _ShowTodosState extends ConsumerState<ShowTodos> {
 
   Widget prevTodosWidget = const SizedBox.shrink();
 
+  List<Todo> filterTodos(List<Todo> allTodos) {
+    final filter = ref.watch(todoFilterProvider);
+    final search = ref.watch(todoSearchProvider);
+
+    List<Todo> tempTodos;
+
+    tempTodos = switch (filter) {
+      Filter.active => allTodos.where((todo) => !todo.completed).toList(),
+      Filter.completed => allTodos.where((todo) => todo.completed).toList(),
+      Filter.all => allTodos,
+    };
+
+    if (search.isNotEmpty) {
+      tempTodos = tempTodos
+          .where(
+              (todo) => todo.desc.toLowerCase().contains(search.toLowerCase()))
+          .toList();
+    }
+
+    return tempTodos;
+  }
+
   @override
   Widget build(BuildContext context) {
     ref.listen<TodoListState>(todoListProvider, (previous, next) {
-      if (next.status == TodoListStatus.failure) {
-        showDialog(
-            context: context,
-            builder: (context) {
-              return AlertDialog(
-                title: Text("ERROR"),
-                content: Text(next.error),
-              );
-            });
+      switch (next) {
+        case TodoListStateFailure(error: String error):
+          showDialog(
+              context: context,
+              builder: (context) {
+                return AlertDialog(
+                  title: Text("ERROR"),
+                  content: Text(error),
+                );
+              });
+        case _:
       }
     });
 
     final todoListState = ref.watch(todoListProvider);
 
-    switch (todoListState.status) {
-      case TodoListStatus.initial:
+    switch (todoListState) {
+      case TodoListStateInitial():
         return const SizedBox.shrink();
-      case TodoListStatus.loading:
+      case TodoListStateLoading():
         return prevTodosWidget;
-      case TodoListStatus.succes:
-        final filteredTodos = ref.watch(filteredTodosProvider);
+      case TodoListStateSuccess(todos: var allTodos):
+        final filteredTodos = filterTodos(allTodos);
 
         prevTodosWidget = ListView.separated(
           itemCount: filteredTodos.length,
@@ -66,13 +92,14 @@ class _ShowTodosState extends ConsumerState<ShowTodos> {
           },
         );
         return prevTodosWidget;
-      case TodoListStatus.failure when prevTodosWidget is SizedBox:
+      case TodoListStateFailure(error: var error)
+          when prevTodosWidget is SizedBox:
         return Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                todoListState.error,
+                error,
                 style: const TextStyle(fontSize: 20),
               ),
               const SizedBox(height: 20),
@@ -88,7 +115,9 @@ class _ShowTodosState extends ConsumerState<ShowTodos> {
             ],
           ),
         );
-      case TodoListStatus.failure:
+      case TodoListStateFailure(error: _):
+        return prevTodosWidget;
+      case _:
         return prevTodosWidget;
     }
   }

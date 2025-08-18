@@ -3,28 +3,45 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 
 import '../../models/todo_model.dart';
-import '../providers/active_todo_count/active_todo_count_provider.dart';
 import '../providers/theme/theme_provider.dart';
 import '../providers/todo_list/todo_list_provider.dart';
 import '../providers/todo_list/todo_list_state.dart';
 
-class TodoHeader extends ConsumerWidget {
+class TodoHeader extends ConsumerStatefulWidget {
   const TodoHeader({super.key});
 
-  int getActiveTodoCount(List<Todo> todos) {
-    return todos.where((todo) => !todo.completed).toList().length;
+  @override
+  ConsumerState<ConsumerStatefulWidget> createState() => _TodoHeaderState();
+}
+
+class _TodoHeaderState extends ConsumerState<TodoHeader> {
+  Widget prevTodoCountWidget = SizedBox.shrink();
+
+  Widget getActiveTodoCount(List<Todo> todos) {
+    final totalCount = todos.length;
+    final activeTodoCount =
+        todos.where((todo) => !todo.completed).toList().length;
+    prevTodoCountWidget = Text(
+      '($activeTodoCount/$totalCount item${activeTodoCount != 1 ? "s" : ""} left)',
+      style: TextStyle(
+        fontSize: 18.0,
+        color: Colors.blue[900],
+      ),
+    );
+    return prevTodoCountWidget;
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final activeTodoCount = ref.watch(activeTodoCountProvider);
+  Widget build(BuildContext context) {
     final todoListState = ref.watch(todoListProvider);
 
-    if (todoListState.status == TodoListStatus.loading) {
-      context.loaderOverlay.show();
-    } else {
-      context.loaderOverlay.hide();
+    switch (todoListState) {
+      case TodoListStateLoading():
+        context.loaderOverlay.show();
+      default:
+        context.loaderOverlay.hide();
     }
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -35,34 +52,28 @@ class TodoHeader extends ConsumerWidget {
               style: TextStyle(fontSize: 36.0),
             ),
             const SizedBox(width: 10),
-            Text(
-              '($activeTodoCount/${todoListState.todos.length} item${activeTodoCount != 1 ? "s" : ""} left)',
-              style: TextStyle(
-                fontSize: 18.0,
-                color: Colors.blue[900],
-              ),
-            ),
+            switch (todoListState) {
+              TodoListStateSuccess(todos: var todos) =>
+                getActiveTodoCount(todos),
+              _ => prevTodoCountWidget,
+            },
           ],
         ),
         Row(
           children: [
             IconButton(
-              onPressed: todoListState.status == TodoListStatus.loading
-                  ? null
-                  : () {
-                      ref.read(themeProvider.notifier).toggleTheme();
-                    },
+              onPressed: () {
+                ref.read(themeProvider.notifier).toggleTheme();
+              },
               icon: Icon(Icons.light_mode),
             ),
             SizedBox(
               width: 10,
             ),
             IconButton(
-              onPressed: todoListState.status == TodoListStatus.loading
-                  ? null
-                  : () {
-                      ref.read(todoListProvider.notifier).getTodos();
-                    },
+              onPressed: () {
+                ref.read(todoListProvider.notifier).getTodos();
+              },
               icon: Icon(Icons.refresh),
             ),
           ],

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:todo_riverpod/pages/providers/theme/theme_state.dart';
 
 import 'pages/providers/theme/theme_provider.dart';
 import 'pages/todos_page.dart';
@@ -26,11 +27,11 @@ class MyApp extends ConsumerWidget {
     return MaterialApp(
       title: 'Todos',
       debugShowCheckedModeBanner: false,
-      theme: currentTheme == AppTheme.light
-          ? ThemeData.light(useMaterial3: true)
-          : ThemeData.dark(
-              useMaterial3: true,
-            ),
+      theme: switch (currentTheme) {
+        LightTheme() => ThemeData.dark(useMaterial3: true),
+        DarkTheme() => ThemeData.light(useMaterial3: true),
+        _ => ThemeData.fallback(),
+      },
       home: const TodosPage(),
     );
   }
