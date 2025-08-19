@@ -1,1 +1,2 @@
 # todo-riverpod
+TODO App (implemented 5 times): 1. Sync Todo App, 2. Async Todo App utilizing enum-based state, 3. Async Todo App utilizing sealed class-based state, 4. Async Todo App utilizing AsyncValue as state, 5. AsyncValue + Hive (data persistence).
