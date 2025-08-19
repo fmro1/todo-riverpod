@@ -9,8 +9,8 @@ import 'repositories/hive_todos_repository.dart';
 import 'repositories/providers/todos_repository_provider.dart';
 
 void main() async {
-  Hive.initFlutter();
-  Hive.openBox("todos");
+  await Hive.initFlutter();
+  await Hive.openBox("todos");
   runApp(
     ProviderScope(
       overrides: [
