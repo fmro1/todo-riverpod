@@ -26,7 +26,7 @@ class MyApp extends ConsumerWidget {
     final currentTheme = ref.watch(themeProvider);
 
     return MaterialApp(
-      title: 'Todos',
+      title: 'Todos AsyncValue',
       debugShowCheckedModeBanner: false,
       theme: switch (currentTheme) {
         LightTheme() => ThemeData.light(useMaterial3: true),
